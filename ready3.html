@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neo Blockchain Dynamic Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    user-select: none; /* evita selección de texto */
+}
+header {
+    text-align: center;
+    padding: 20px;
+    font-size: 2rem;
+    color: #00ff00;
+}
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+.left-panel, .right-panel {
+    flex: 1;
+    min-width: 320px;
+    background: #111;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #00ff00;
+    position: relative;
+}
+input, select, button {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+}
+button {
+    background: #00ff00;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+button:hover {
+    background: #00cc00;
+}
+.investment-results {
+    margin-top: 20px;
+    background: #222;
+    padding: 10px;
+    border-radius: 10px;
+}
+.saved-investments {
+    margin-top: 20px;
+}
+.saved-investments table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.saved-investments th, .saved-investments td {
+    border: 1px solid #00ff00;
+    padding: 5px;
+    text-align: center;
+    font-size: 0.85rem;
+}
+.transaction-ticker {
+    max-height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+.transaction-ticker h2 {
+    text-align: center;
+    color: #00ff00;
+}
+.ticker-wrapper {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+}
+.transaction {
+    background: #222;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: monospace;
+    box-shadow: 0 0 5px #00ff00;
+}
+canvas {
+    background: #111;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+.falling-leaf {
+    position: absolute;
+    color: #00ff00;
+    font-size: 14px;
+    pointer-events: none;
+    user-select: none;
+}
+.drops-section {
+    margin-top:20px; 
+    background:#111; 
+    padding:15px; 
+    border-radius:15px; 
+    box-shadow:0 0 10px #00ff00; 
+    text-align:center;
+    position: relative; /* Para limitar las pelotitas */
+    min-height:150px; /* espacio para que se muevan */
+}
+.drops-section h3 {
+    color:#00ff00; 
+    margin-bottom:10px;
+}
+.drops-section p {
+    font-size:0.9rem; 
+    line-height:1.4; 
+    color:#fff;
+}
+.drops-section button {
+    margin-top:10px; 
+    background:#00ff00; 
+    color:#000; 
+    font-weight:bold; 
+    cursor:pointer; 
+    padding:10px 15px; 
+    border-radius:10px; 
+    font-size:1rem;
+}
+</style>
+</head>
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
+
+<header>Neo Blockchain Dynamic Dashboard</header>
+<div class="container">
+
+<!-- Left Panel -->
+<div class="left-panel">
+    <h3>Investment Calculator</h3>
+    <label>Buy Price ($)</label>
+    <input type="number" id="buyPrice" value="0.0010">
+    <label>Investment Amount ($)</label>
+    <input type="number" id="investment" value="100">
+    <label>Sell Price ($)</label>
+    <input type="number" id="sellPrice" value="0.006">
+    <label>Investment Fee ($)</label>
+    <input type="number" id="investmentFee" value="0">
+    <label>Exit Fee ($)</label>
+    <input type="number" id="exitFee" value="0">
+    <label>Currency</label>
+    <select id="currency">
+        <option value="USDT">USDT</option>
+        <option value="ETH">ETH</option>
+        <option value="BNB">BNB</option>
+        <option value="XRP">XRP</option>
+    </select>
+    <button onclick="calculateInvestment()">Calculate & Save</button>
+
+    <div class="investment-results" id="investmentResults"></div>
+
+    <canvas id="investmentChart" width="400" height="200"></canvas>
+    <canvas id="communityChart" width="400" height="200"></canvas>
+
+    <div class="saved-investments">
+        <h3>Saved Investments</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount ($)</th>
+                    <th>Buy Price</th>
+                    <th>Sell Price</th>
+                    <th>Currency</th>
+                    <th>Tx Reference</th>
+                    <th>Etherscan</th>
+                </tr>
+            </thead>
+            <tbody id="savedInvestmentsBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Right Panel -->
+<div class="right-panel">
+    <div class="transaction-ticker">
+        <h2>Leaf Transactions</h2>
+        <div class="ticker-wrapper" id="tickerWrapper"></div>
+    </div>
+
+    <div class="drops-section" id="dropsSection">
+        <h3>DROPS</h3>
+        <p>Once the pre-sale ends, you can claim your rewards using the button below. Stay alert for updates if you want to continue investing in the token. We really appreciate your participation in the cryptocurrency project!</p>
+        <button onclick="alert('CLIENT DROPS clicked!')">CLIENT DROPS</button>
+    </div>
+</div>
+
+<script>
+// ------------------ Investment Calculation & Saving ------------------
+function calculateInvestment(){
+    const buyPrice = parseFloat(document.getElementById('buyPrice').value);
+    const sellPrice = parseFloat(document.getElementById('sellPrice').value);
+    const investment = parseFloat(document.getElementById('investment').value);
+    const investFee = parseFloat(document.getElementById('investmentFee').value);
+    const exitFee = parseFloat(document.getElementById('exitFee').value);
+    const currency = document.getElementById('currency').value;
+
+    const totalInvestment = investment + investFee;
+    const totalExit = (investment / buyPrice) * sellPrice - exitFee;
+    const profitLoss = totalExit - totalInvestment;
+    const profitPerc = ((profitLoss / totalInvestment) * 100).toFixed(2);
+
+    const txRef = Math.floor(Math.random()*1000000000);
+
+    document.getElementById('investmentResults').innerHTML = `
+        <p>Profit/Loss: $${profitLoss.toFixed(2)} (${profitPerc}%)</p>
+        <p>Total Investment Amount: $${totalInvestment.toFixed(2)}</p>
+        <p>Total Exit Amount: $${totalExit.toFixed(2)}</p>
+        <p>Currency: ${currency}</p>
+        <p>Transaction Ref: ${txRef} <a href="https://etherscan.io/tx/${txRef}" target="_blank" style="color:#00ff00;">View on Etherscan</a></p>
+    `;
+
+    const saved = JSON.parse(localStorage.getItem('investments') || '[]');
+    saved.push({
+        date: new Date().toLocaleString(),
+        amount: investment,
+        buyPrice, sellPrice,
+        currency,
+        txRef
+    });
+    localStorage.setItem('investments', JSON.stringify(saved));
+    renderSavedInvestments();
+    renderInvestmentChart(saved);
+    renderCommunityChart(saved);
+}
+
+// ------------------ Render Saved Investments ------------------
+function renderSavedInvestments(){
+    const saved = JSON.parse(localStorage.getItem('investments') || '[]');
+    const tbody = document.getElementById('savedInvestmentsBody');
+    tbody.innerHTML = '';
+    saved.forEach(inv => {
+        tbody.innerHTML += `<tr>
+            <td>${inv.date}</td>
+            <td>${inv.amount}</td>
+            <td>${inv.buyPrice}</td>
+            <td>${inv.sellPrice}</td>
+            <td>${inv.currency}</td>
+            <td>${inv.txRef}</td>
+            <td><a href="https://etherscan.io/tx/${inv.txRef}" target="_blank" style="color:#00ff00;">View</a></td>
+        </tr>`;
+    });
+}
+
+// ------------------ Charts ------------------
+let investmentChart, communityChart;
+function renderInvestmentChart(data){
+    const ctx = document.getElementById('investmentChart').getContext('2d');
+    const labels = data.map(d=>d.date);
+    const values = data.map(d=>d.amount);
+
+    if(investmentChart) investmentChart.destroy();
+    investmentChart = new Chart(ctx, {
+        type:'line',
+        data:{labels, datasets:[{
+            label:'Investment Progress',
+            data:values,
+            borderColor:'#00ff00',
+            backgroundColor:'rgba(0,255,0,0.2)',
+            tension:0.3,
+            fill:true
+        }]},
+        options:{animation:false, scales:{y:{beginAtZero:true, grid:{color:'#222'}}, x:{grid:{color:'#222'}}}}
+    });
+}
+
+function renderCommunityChart(data){
+    const ctx = document.getElementById('communityChart').getContext('2d');
+    const labels=['Community'];
+    const values=[data.reduce((sum,d)=>sum+d.amount,0)];
+
+    if(communityChart) communityChart.destroy();
+    communityChart = new Chart(ctx,{
+        type:'bar',
+        data:{labels, datasets:[{
+            label:'Total Community Investment',
+            data:values,
+            backgroundColor:'rgba(0,255,0,0.6)',
+            borderColor:'#00ff00',
+            borderWidth:1
+        }]},
+        options:{animation:false, scales:{y:{beginAtZero:true, grid:{color:'#222'}}, x:{grid:{color:'#222'}}}}
+    });
+}
+
+// ------------------ Transaction Ticker ------------------
+const tickerWrapper = document.getElementById('tickerWrapper');
+const maxTransactions = 60;
+const contractAddress = "0x1234567890ABCDEF1234567890ABCDEF12345678";
+
+function randomTransaction(){
+    const amount=(Math.random()*4990+10).toFixed(2);
+    const words="amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua".split(" ");
+    const snippet=words.slice(-15).join(" ");
+    const now=new Date();
+    const txRef=Math.floor(Math.random()*1000000000);
+    return {time: now.toLocaleTimeString(), amount, snippet, contractAddress, txRef};
+}
+
+function addTransaction(){
+    const tx=randomTransaction();
+    const div=document.createElement("div");
+    div.className="transaction";
+    div.innerHTML=`<strong>${tx.amount} $</strong><br>
+                   <em>${tx.snippet}</em><br>
+                   <small>${tx.contractAddress} • ${tx.time} • Ref: <a href="https://etherscan.io/tx/${tx.txRef}" target="_blank" style="color:#00ff00;">${tx.txRef}</a></small>`;
+    tickerWrapper.prepend(div);
+    while(tickerWrapper.childNodes.length>maxTransactions){
+        tickerWrapper.removeChild(tickerWrapper.lastChild);
+    }
+
+    createDiamondInDrops();
+    updateChartWithRandom();
+}
+
+// ------------------ Diamonds (pelotitas) solo en DROPS ------------------
+const dropsContainer=document.getElementById('dropsSection');
+function createDiamondInDrops(){
+    const diamond=document.createElement("div");
+    diamond.className="falling-leaf";
+    diamond.textContent="♦";
+
+    const containerRect=dropsContainer.getBoundingClientRect();
+    diamond.style.left=(Math.random()*containerRect.width)+"px";
+    diamond.style.top=(Math.random()*(containerRect.height-20))+"px";
+
+    dropsContainer.appendChild(diamond);
+
+    let speedX=(Math.random()-0.5)*0.3;
+    let directionY=Math.random()>0.5?1:-1;
+    let rangeY=15;
+    let baseY=parseFloat(diamond.style.top);
+
+    function move(){
+        let top=parseFloat(diamond.style.top);
+        let left=parseFloat(diamond.style.left);
+
+        top+=directionY*0.2;
+        if(top>baseY+rangeY || top<baseY-rangeY) directionY*=-1;
+
+        left+=speedX;
+        if(left<0) left=0;
+        if(left>containerRect.width) left=containerRect.width;
+
+        diamond.style.top=top+"px";
+        diamond.style.left=left+"px";
+
+        requestAnimationFrame(move);
+    }
+    move();
+}
+
+// ------------------ Chart Updates ------------------
+function updateChartWithRandom(){
+    const chartData=JSON.parse(localStorage.getItem('investments')||'[]');
+    if(chartData.length>0){
+        chartData[chartData.length-1].amount+=Math.random()*50;
+        renderInvestmentChart(chartData);
+        renderCommunityChart(chartData);
+    }
+}
+
+// ------------------ Auto-generate transactions ------------------
+setInterval(addTransaction,1500);
+for(let i=0;i<20;i++) addTransaction();
+
+// ------------------ Initial load ------------------
+renderSavedInvestments();
+renderInvestmentChart(JSON.parse(localStorage.getItem('investments')||'[]'));
+renderCommunityChart(JSON.parse(localStorage.getItem('investments')||'[]'));
+</script>
+</body>
+</html>
+

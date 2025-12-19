@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Galactic Investor Community</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+
+body{
+ height:100vh;
+ background:radial-gradient(circle at top,#1b1f4a,#05010f 70%);
+ color:#eaeaea;
+ overflow:hidden;
+ user-select:none; /* deshabilita selección de texto */
+}
+
+.stars{
+ position:fixed;
+ width:100%;
+ height:100%;
+ background:
+  repeating-radial-gradient(circle at 20% 30%, #fff 0 1px, transparent 2px 100px),
+  repeating-radial-gradient(circle at 70% 80%, #fff 0 1px, transparent 2px 120px);
+ opacity:.25;
+ z-index:0;
+}
+
+.wrapper{
+ position:relative;
+ z-index:2;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ height:100%;
+ padding:40px;
+}
+
+/* 👽 Alien */
+.alien-panel{
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+}
+
+.alien{
+ width:220px;
+ height:300px;
+ background:linear-gradient(180deg,#9cffc7,#1f7a5a);
+ border-radius:50% 50% 40% 40%;
+ box-shadow:0 0 40px rgba(140,255,200,.6);
+ position:relative;
+}
+
+.eye{
+ width:50px;
+ height:70px;
+ background:#000;
+ border-radius:50%;
+ position:absolute;
+ top:80px;
+}
+
+.eye.left{left:45px}
+.eye.right{right:45px}
+
+.alien-title{
+ margin-top:20px;
+ text-align:center;
+}
+
+.alien-title h2{color:#9cffc7;font-size:22px}
+.alien-title span{font-size:12px;color:#caffea}
+
+/* 📊 Market */
+.market-panel{
+ background:rgba(10,15,40,.75);
+ border-radius:24px;
+ padding:30px;
+ backdrop-filter:blur(10px);
+ box-shadow:0 0 40px rgba(0,0,0,.6);
+}
+
+.market-panel h1{
+ color:#ffd86a;
+ margin-bottom:10px;
+}
+
+.market-panel p{
+ font-size:14px;
+ color:#ccc;
+ margin-bottom:20px;
+}
+
+.wallet-box{
+ background:#050814;
+ border-radius:16px;
+ padding:15px;
+ margin-bottom:20px;
+ font-size:13px;
+}
+
+.wallet-status{
+ color:#6ad1ff;
+ margin-bottom:8px;
+}
+
+button{
+ padding:12px 20px;
+ border:none;
+ border-radius:12px;
+ cursor:pointer;
+ font-weight:700;
+}
+
+.connect{
+ background:linear-gradient(180deg,#ffd86a,#f1b93b);
+ color:#111;
+}
+
+/* Logs */
+.log{
+ background:#050814;
+ border-radius:14px;
+ padding:15px;
+ height:220px;
+ overflow:auto;
+ font-size:13px;
+}
+
+.log span{display:block;margin-bottom:6px}
+.buy{color:#6aff9d}
+.info{color:#6ad1ff}
+
+/* Community */
+.community{
+ margin-top:20px;
+ background:linear-gradient(180deg,#0f153a,#05010f);
+ border-radius:18px;
+ padding:18px;
+ border:1px solid #2b2f6a;
+}
+
+/* Client Drops */
+.drops-section{
+ margin-top:20px;
+ background:#111;
+ padding:15px;
+ border-radius:15px;
+ box-shadow:0 0 10px #00ff00;
+ text-align:center;
+ position:relative;
+ height:150px;
+ overflow:hidden;
+}
+
+.drops-section h3{
+ color:#00ff00;
+ margin-bottom:10px;
+}
+
+.drops-section p{
+ font-size:0.9rem;
+ line-height:1.4;
+ color:#fff;
+}
+
+.drops-section button{
+ margin-top:10px;
+ background:#00ff00;
+ color:#000;
+ font-weight:bold;
+ cursor:pointer;
+ padding:10px 15px;
+ border-radius:10px;
+ font-size:1rem;
+}
+
+.diamond{
+ position:absolute;
+ color:#00ff00;
+ font-size:14px;
+ user-select:none;
+ pointer-events:none;
+}
+
+/* Footer */
+footer{
+ position:absolute;
+ bottom:15px;
+ width:100%;
+ text-align:center;
+ font-size:11px;
+ color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars"></div>
+
+<div class="wrapper">
+
+<!-- Alien -->
+<div class="alien-panel">
+ <div class="alien">
+  <div class="eye left"></div>
+  <div class="eye right"></div>
+ </div>
+ <div class="alien-title">
+  <h2>Visitor XÆ-77</h2>
+  <span>Intergalactic Investor</span>
+ </div>
+</div>
+
+<!-- Market -->
+<div class="market-panel">
+ <h1>Earth Investment Network</h1>
+ <p>Un inversionista de otra galaxia participa activamente en los mercados humanos.</p>
+
+ <div class="wallet-box">
+  <div class="wallet-status" id="walletStatus">Wallet not connected</div>
+  <button class="connect" onclick="goToReady3()">Wallet</button>
+ </div>
+
+ <div class="log" id="log">
+  <span class="info">🛸 Arrival confirmed. Market analysis started.</span>
+ </div>
+
+ <div class="community">
+  <strong>Investor Community</strong>
+  <p>
+   Una comunidad global de inversionistas dispuestos a participar,
+   aportar capital y crecer junto a inteligencias avanzadas.
+  </p>
+ </div>
+
+ <div class="drops-section" id="dropsSection">
+  <h3>DROPS</h3>
+  <p>Cuando termine la pre-venta, podrá reclamar en el botón CLIENT DROPS. ¡Gracias por participar en el proyecto!</p>
+  <button onclick="alert('CLIENT DROPS clicked!')">CLIENT DROPS</button>
+ </div>
+
+</div>
+
+</div>
+
+<footer>
+© Galactic Investor Community — All Rights Reserved
+</footer>
+
+<script>
+const log = document.getElementById('log');
+const walletStatus = document.getElementById('walletStatus');
+
+// Redirigir al ready3.html
+function goToReady3(){
+    window.location.href = 'ready3.html';
+}
+
+// Logs automáticos
+const actions = [
+ 'Alien acquired Earth-based assets',
+ 'Market confidence increasing',
+ 'New investment cycle opened',
+ 'Capital flow optimized',
+ 'Long-term strategy confirmed'
+];
+
+let i = 0;
+setInterval(()=>{
+ addLog(actions[i % actions.length],'buy');
+ i++;
+},3000);
+
+function addLog(text,type){
+ const span = document.createElement('span');
+ span.className = type;
+ span.textContent = '✔ ' + text;
+ log.appendChild(span);
+ log.scrollTop = log.scrollHeight;
+}
+
+// Diamantes que suben solo en Client Drops
+const dropsSection = document.getElementById('dropsSection');
+
+function createDiamond(){
+ const diamond = document.createElement('div');
+ diamond.className = 'diamond';
+ diamond.textContent = '◆';
+ diamond.style.left = Math.random()*(dropsSection.clientWidth - 20) + 'px';
+ diamond.style.top = (dropsSection.clientHeight - 20) + 'px';
+ dropsSection.appendChild(diamond);
+
+ let speed = Math.random()*1 + 0.5;
+ function rise(){
+    let top = parseFloat(diamond.style.top);
+    if(top > 0){
+        diamond.style.top = (top - speed) + 'px';
+        requestAnimationFrame(rise);
+    } else {
+        diamond.remove();
+    }
+ }
+ rise();
+}
+
+// Crear diamantes cada 0.5s
+setInterval(createDiamond,500);
+
+// Anti-copia
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey || e.key==='F12'){e.preventDefault();}
+});
+</script>
+
+</body>
+</html>
+

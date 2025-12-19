@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Galactic Investor Community</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap');
+
+*{
+ margin:0;
+ padding:0;
+ box-sizing:border-box;
+ font-family:'Orbitron',sans-serif;
+ -webkit-user-select:none;
+ -moz-user-select:none;
+ user-select:none;
+}
+
+body{
+ height:100vh;
+ color:#e8e8e8;
+ background:radial-gradient(circle at top,#1b1f4a,#05010f 70%);
+ overflow:hidden;
+}
+
+.stars{
+ position:fixed;
+ inset:0;
+ background:
+  repeating-radial-gradient(circle at 20% 30%, #fff 0 1px, transparent 2px 100px),
+  repeating-radial-gradient(circle at 70% 80%, #fff 0 1px, transparent 2px 120px);
+ opacity:.3;
+ z-index:0;
+}
+
+.wrapper{
+ position:relative;
+ z-index:2;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ height:100%;
+ padding:40px;
+}
+
+/* 👽 Alien */
+.alien-panel{
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+}
+
+.alien{
+ width:220px;
+ height:300px;
+ background:linear-gradient(180deg,#9cffc7,#1f7a5a);
+ border-radius:50% 50% 40% 40%;
+ box-shadow:0 0 40px rgba(140,255,200,.6);
+ position:relative;
+}
+
+.eye{
+ width:50px;
+ height:70px;
+ background:#000;
+ border-radius:50%;
+ position:absolute;
+ top:80px;
+}
+
+.eye.left{left:45px}
+.eye.right{right:45px}
+
+.alien::after{
+ content:'';
+ width:140px;
+ height:40px;
+ background:#0b3d2e;
+ position:absolute;
+ bottom:40px;
+ left:50%;
+ transform:translateX(-50%);
+ border-radius:0 0 40px 40px;
+}
+
+.alien-title{
+ margin-top:25px;
+ text-align:center;
+}
+
+.alien-title h2{color:#9cffc7;font-size:22px}
+.alien-title span{font-size:12px;color:#b8ffe2}
+
+/* 📊 Market Panel */
+.market-panel{
+ background:rgba(10,15,40,.75);
+ border-radius:24px;
+ padding:30px;
+ backdrop-filter:blur(10px);
+ box-shadow:0 0 40px rgba(0,0,0,.6);
+}
+
+.market-panel h1{
+ font-size:26px;
+ color:#ffd86a;
+ margin-bottom:10px;
+}
+
+.market-panel p{
+ font-size:14px;
+ color:#ccc;
+ margin-bottom:20px;
+}
+
+.log{
+ background:#050814;
+ border-radius:14px;
+ padding:20px;
+ height:230px;
+ overflow:auto;
+ font-size:13px;
+ line-height:1.6;
+}
+
+.log span{display:block;margin-bottom:6px}
+.buy{color:#6aff9d}
+.info{color:#6ad1ff}
+
+/* 🚀 Invest Button */
+.invest-btn{
+ width:100%;
+ margin-top:20px;
+ padding:16px;
+ border:none;
+ border-radius:16px;
+ font-size:16px;
+ font-weight:800;
+ letter-spacing:1px;
+ cursor:pointer;
+ background:linear-gradient(180deg,#ffd86a,#f5b942);
+ color:#111;
+ box-shadow:0 0 25px rgba(255,216,106,.6);
+ transition:.3s;
+}
+
+.invest-btn:hover{
+ transform:scale(1.04);
+ box-shadow:0 0 40px rgba(255,216,106,.9);
+}
+
+/* 🌍 Community */
+.community{
+ margin-top:25px;
+ padding:20px;
+ border-radius:18px;
+ background:linear-gradient(180deg,#0f153a,#05010f);
+ border:1px solid #2b2f6a;
+}
+
+.community h3{color:#9cffc7;margin-bottom:10px}
+.community p{font-size:13px;color:#d0d0d0}
+
+footer{
+ position:absolute;
+ bottom:15px;
+ width:100%;
+ text-align:center;
+ font-size:11px;
+ color:#888;
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars"></div>
+
+<div class="wrapper">
+
+<!-- Alien -->
+<div class="alien-panel">
+ <div class="alien">
+  <div class="eye left"></div>
+  <div class="eye right"></div>
+ </div>
+ <div class="alien-title">
+  <h2>Visitor XÆ-77</h2>
+  <span>Intergalactic Strategic Investor</span>
+ </div>
+</div>
+
+<!-- Market -->
+<div class="market-panel">
+ <h1>Earth Investment Network</h1>
+ <p>Un inversionista de otra galaxia participa activamente en los mercados humanos.</p>
+
+ <div class="log" id="log">
+  <span class="info">🛸 Arrival confirmed. Market analysis started.</span>
+ </div>
+
+ <button class="invest-btn" onclick="investNow()">
+  🚀 INVEST NOW
+ </button>
+
+ <div class="community">
+  <h3>🌍 Investor Community</h3>
+  <p>
+   Comunidad global de inversionistas dispuestos a participar,
+   aportar capital y crecer junto a inteligencias avanzadas.
+  </p>
+ </div>
+</div>
+
+</div>
+
+<footer>
+© Galactic Investor Community — All Rights Reserved
+</footer>
+
+<script>
+// 🔐 Anti copiar / ver fuente
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('copy',e=>e.preventDefault());
+document.addEventListener('cut',e=>e.preventDefault());
+document.addEventListener('paste',e=>e.preventDefault());
+document.addEventListener('selectstart',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+ if(
+  e.key==='F12' ||
+  (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key)) ||
+  (e.ctrlKey && e.key==='U')
+ ) e.preventDefault();
+});
+
+// 🔐 Blur al cambiar de pestaña
+document.addEventListener("visibilitychange",()=>{
+ document.body.style.filter=document.hidden?"blur(18px)":"none";
+});
+
+// 📊 Actividad continua
+const log=document.getElementById('log');
+const actions=[
+ 'Capital flow optimized',
+ 'Market confidence rising',
+ 'New investment cycle opened',
+ 'Strategic allocation confirmed',
+ 'Long-term growth projection approved'
+];
+
+let i=0;
+setInterval(()=>{
+ const span=document.createElement('span');
+ span.className='info';
+ span.textContent='✔ '+actions[i%actions.length];
+ log.appendChild(span);
+ log.scrollTop=log.scrollHeight;
+ i++;
+},2600);
+
+// 🚀 Invest action
+function investNow(){
+ const span=document.createElement('span');
+ span.className='buy';
+ span.textContent='✔ Investment executed — Capital allocated successfully';
+ log.appendChild(span);
+ log.scrollTop=log.scrollHeight;
+
+ // Redirigir después de 1 segundo
+ setTimeout(()=>{ window.location.href='2.html'; }, 1000);
+}
+
+script>
+function goToPage2() {
+    window.location.href = '2.html'; // nombre de tu segunda página
+}
+</script>
+
+</script>
+
+</body>
+</html>
+
+

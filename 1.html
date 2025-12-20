@@ -128,7 +128,7 @@ body{
 .buy{color:#6aff9d}
 .info{color:#6ad1ff}
 
-/* 🚀 Invest Button */
+/* 🚀 Buttons */
 .invest-btn{
  width:100%;
  margin-top:20px;
@@ -200,8 +200,23 @@ footer{
   <span class="info">🛸 Arrival confirmed. Market analysis started.</span>
  </div>
 
+ <!-- INVEST -->
  <button class="invest-btn" onclick="investNow()">
   🚀 INVEST NOW
+ </button>
+
+ <!-- Innovation text -->
+ <p style="margin-top:18px;font-size:13px;color:#b8ffe2;text-align:center;">
+  Te invito a visitar este espacio que estamos creando para una excelente oportunidad.
+  Lo estamos mejorando todos los días.
+ </p>
+
+ <!-- INNOVATION -->
+ <button class="invest-btn" onclick="goToInnovation()" style="
+  background:linear-gradient(180deg,#6ad1ff,#3aa7e8);
+  box-shadow:0 0 25px rgba(106,209,255,.6);
+ ">
+  🧠 INNOVATION
  </button>
 
  <div class="community">
@@ -220,7 +235,7 @@ footer{
 </footer>
 
 <script>
-// 🔐 Anti copiar / ver fuente
+// 🔐 Anti copiar
 document.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('copy',e=>e.preventDefault());
 document.addEventListener('cut',e=>e.preventDefault());
@@ -234,12 +249,12 @@ document.addEventListener('keydown',e=>{
  ) e.preventDefault();
 });
 
-// 🔐 Blur al cambiar de pestaña
+// Blur al cambiar de pestaña
 document.addEventListener("visibilitychange",()=>{
  document.body.style.filter=document.hidden?"blur(18px)":"none";
 });
 
-// 📊 Actividad continua
+// Log dinámico
 const log=document.getElementById('log');
 const actions=[
  'Capital flow optimized',
@@ -259,27 +274,21 @@ setInterval(()=>{
  i++;
 },2600);
 
-// 🚀 Invest action
+// Invest
 function investNow(){
  const span=document.createElement('span');
  span.className='buy';
  span.textContent='✔ Investment executed — Capital allocated successfully';
  log.appendChild(span);
  log.scrollTop=log.scrollHeight;
-
- // Redirigir después de 1 segundo
- setTimeout(()=>{ window.location.href='2.html'; }, 1000);
+ setTimeout(()=>{ window.location.href='2.html'; },1000);
 }
 
-script>
-function goToPage2() {
-    window.location.href = '2.html'; // nombre de tu segunda página
+// Innovation
+function goToInnovation(){
+ window.location.href='test.html';
 }
-</script>
-
 </script>
 
 </body>
 </html>
-
-
